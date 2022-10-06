@@ -7,8 +7,6 @@ import java.time.LocalDate;
 @Data
 public class User {
 
-
-
     private Integer id;
     @Email
     private final String email;
@@ -18,4 +16,5 @@ public class User {
     private String name;
     @PastOrPresent
     private final LocalDate birthday;
+
 }

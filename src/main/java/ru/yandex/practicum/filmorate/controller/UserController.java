@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -42,12 +43,7 @@ public class UserController {
     @PutMapping()
     public User putUser(@Valid @RequestBody User user) {
         if (users.containsKey(user.getId())) {
-            if (user.getId() == null) {
-                user.setId(id);
-                log.info("Пользователю присвоен id = {} автоматически", user.getId());
-                id++;
-            }
-            if (user.getName().isEmpty()) {
+            if (user.getName() == null) {
                 user.setName(user.getLogin());
                 log.info("Пользователь не указал имени, присвоено значение логина - {}", user.getName());
             }
@@ -55,7 +51,8 @@ public class UserController {
             users.put(user.getId(), user);
         } else {
             log.warn("Не удалось найти пользователя {} для обновления информации", user.getName());
-            throw new ValidationException("Ошибка обновления информации о пользователе");
+            throw new ValidationException(HttpStatus.NOT_FOUND
+                    , "Ошибка обновления информации о пользователе");
         }
         return user;
     }

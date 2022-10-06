@@ -10,11 +10,11 @@ public class Film {
 
     private Integer id;
     @NotBlank
-    private String name;
+    private final String name;
     @Size(max = 200)
-    private String description;
-    private LocalDate releaseDate;
+    private final String description;
+    private final LocalDate releaseDate;
     @Positive
-    private int duration;
+    private final int duration;
 
 }

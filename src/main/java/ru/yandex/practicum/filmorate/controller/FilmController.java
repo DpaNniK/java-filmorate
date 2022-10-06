@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -29,8 +30,9 @@ public class FilmController {
     @PostMapping()
     public Film createFilm(@Valid @RequestBody Film film) {
         if (film.getReleaseDate().isBefore(DATE)) {
-            log.warn("Ошибка. Пользователем казана неверная дата выхода фильма");
-            throw new ValidationException("Ошибка. Указана неверная дата выхода фильма");
+            log.warn("Ошибка. Пользователем указана неверная дата выхода фильма");
+            throw new ValidationException(HttpStatus.BAD_REQUEST
+                    , "Ошибка. Указана неверная дата выхода фильма");
         } else {
             if (film.getId() == null) {
                 film.setId(id);
@@ -48,14 +50,16 @@ public class FilmController {
         if (films.containsKey(film.getId())) {
             if (film.getReleaseDate().isBefore(DATE)) {
                 log.warn("Пользователь ввел некорректную дату выхода фильма");
-                throw new ValidationException("Ошибка. Дата фильма не может быть раньше 28.12.1895");
+                throw new ValidationException(HttpStatus.BAD_REQUEST
+                        , "Ошибка. Дата фильма не может быть раньше 28.12.1895");
             } else {
                 log.info("Фильм с id {} успешно обновлен", film.getId());
                 films.put(film.getId(), film);
             }
         } else {
             log.warn("Пользователь указал не существующий id для обновления фильма");
-            throw new ValidationException("Ошибка. Такого фильма не найдено");
+            throw new ValidationException(HttpStatus.NOT_FOUND
+                    , "Ошибка. Такого фильма не найдено");
         }
         return film;
     }
