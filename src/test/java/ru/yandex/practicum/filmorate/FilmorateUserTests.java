@@ -17,6 +17,7 @@ import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -43,7 +44,11 @@ public class FilmorateUserTests {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(user)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("mail@mail.ru"))
+                .andExpect(jsonPath("$.login").value("dolore"))
+                .andExpect(jsonPath("$.name").value("Nick Name"))
+                .andExpect(jsonPath("$.birthday").value("1946-08-20"));
     }
 
     //Тестирование добавления пользователя с не указанным в запросе именем, а также id
@@ -54,7 +59,11 @@ public class FilmorateUserTests {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(user)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value("mail@mail.ru"))
+                .andExpect(jsonPath("$.login").value("common"))
+                .andExpect(jsonPath("$.name").value("common"))
+                .andExpect(jsonPath("$.birthday").value("1946-08-20"));
     }
 
     //Тестирование PUT для обновления информации о пользователе
@@ -89,7 +98,12 @@ public class FilmorateUserTests {
         mockMvc.perform(put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(newUser)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.email").value("mail@yandex.ru"))
+                .andExpect(jsonPath("$.login").value("doloreUpdate"))
+                .andExpect(jsonPath("$.name").value("doloreUpdate"))
+                .andExpect(jsonPath("$.birthday").value("1976-09-20"));
     }
 
     //Тестирование добавления пользователя с неуказанными в запросе данными (получение ошибки 400)

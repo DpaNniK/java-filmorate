@@ -17,10 +17,11 @@ import java.time.LocalDate;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = FilmorateApplication.class)
 @AutoConfigureMockMvc
 public class FilmorateFilmTest {
     @Autowired
@@ -41,7 +42,12 @@ public class FilmorateFilmTest {
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(film)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("film name"))
+                .andExpect(jsonPath("$.description").value("des"))
+                .andExpect(jsonPath("$.releaseDate").value("1967-03-25"))
+                .andExpect(jsonPath("$.duration").value(100))
+                .andReturn();
     }
 
     //Тестирование PUT для обновления инф-ции о фильме
@@ -56,7 +62,11 @@ public class FilmorateFilmTest {
         mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(newFilm)))
-                .andExpect(status().isOk());
+                .andExpect(jsonPath("$.name").value("New Film"))
+                .andExpect(jsonPath("$.description").value("new desc"))
+                .andExpect(jsonPath("$.releaseDate").value("1989-04-17"))
+                .andExpect(jsonPath("$.duration").value(190))
+                .andReturn();
     }
 
     //Получение ошибки при неверной дате релиза
