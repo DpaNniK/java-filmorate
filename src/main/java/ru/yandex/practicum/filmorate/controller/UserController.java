@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -14,46 +14,50 @@ import java.util.*;
 @RequestMapping("/users")
 
 public class UserController {
+    UserService userService;
 
-    Map<Integer, User> users = new HashMap<>();
-    private int id = 1;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping()
     public Collection<User> getUsers() {
-        log.info("Получен GET запрос списка пользователей");
-        return users.values();
+        return userService.getUsers();
+    }
+
+    @GetMapping("/{id}")
+    public User getUsersById(@PathVariable Integer id) {
+        return userService.getUsersById(id);
     }
 
     @PostMapping()
     public User createUser(@Valid @RequestBody User user) {
-        if (user.getId() == null) {
-            user.setId(id);
-            log.info("Пользователю присвоен id = {} автоматически", user.getId());
-            id++;
-        }
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-            log.info("Пользователь не указал имени, присвоено значение логина - {}", user.getName());
-        }
-        log.info("Пользователь {} добавлен в список", user.getName());
-        users.put(user.getId(), user);
-        return user;
+        return userService.createUser(user);
     }
 
     @PutMapping()
-    public User putUser(@Valid @RequestBody User user) {
-        if (users.containsKey(user.getId())) {
-            if (user.getName() == null) {
-                user.setName(user.getLogin());
-                log.info("Пользователь не указал имени, присвоено значение логина - {}", user.getName());
-            }
-            log.info("Информация о пользователь {} обновлена", user.getName());
-            users.put(user.getId(), user);
-        } else {
-            log.warn("Не удалось найти пользователя {} для обновления информации", user.getName());
-            throw new ValidationException(HttpStatus.NOT_FOUND
-                    , "Ошибка обновления информации о пользователе");
-        }
-        return user;
+    public User updateUser(@Valid @RequestBody User user) {
+        return userService.updateUser(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.deleteFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public Collection<User> getFriendList(@PathVariable Integer id) {
+        return userService.getFriendList(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getMutualFriendsList(@PathVariable Integer id, @PathVariable Integer otherId) {
+        return userService.getMutualFriendsList(id, otherId);
     }
 }
