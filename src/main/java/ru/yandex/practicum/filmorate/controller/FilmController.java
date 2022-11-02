@@ -1,14 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.*;
 
 @Slf4j
@@ -16,52 +14,46 @@ import java.util.*;
 @RequestMapping("/films")
 
 public class FilmController {
+    FilmService filmService;
 
-    HashMap<Integer, Film> films = new HashMap<>();
-    private int id = 1;
-    private static final LocalDate DATE = LocalDate.of(1895, Month.DECEMBER, 28);
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @GetMapping()
     public Collection<Film> getFilms() {
-        log.info("Получен GET запрос списка фильмов");
-        return films.values();
+        return filmService.getFilms();
+    }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Integer id) {
+        return filmService.getFilmById(id);
     }
 
     @PostMapping()
     public Film createFilm(@Valid @RequestBody Film film) {
-        if (film.getReleaseDate().isBefore(DATE)) {
-            log.warn("Ошибка. Пользователем указана неверная дата выхода фильма");
-            throw new ValidationException(HttpStatus.BAD_REQUEST
-                    , "Ошибка. Указана неверная дата выхода фильма");
-        } else {
-            if (film.getId() == null) {
-                film.setId(id);
-                log.info("Фильму присвоен id = {} автоматически", film.getId());
-                id++;
-            }
-            log.info("Новый фильм добавлен в список");
-            films.put(film.getId(), film);
-        }
-        return film;
+        return filmService.createFilm(film);
     }
 
     @PutMapping()
-    public Film putFilm(@Valid @RequestBody Film film) {
-        if (films.containsKey(film.getId())) {
-            if (film.getReleaseDate().isBefore(DATE)) {
-                log.warn("Пользователь ввел некорректную дату выхода фильма");
-                throw new ValidationException(HttpStatus.BAD_REQUEST
-                        , "Ошибка. Дата фильма не может быть раньше 28.12.1895");
-            } else {
-                log.info("Фильм с id {} успешно обновлен", film.getId());
-                films.put(film.getId(), film);
-            }
-        } else {
-            log.warn("Пользователь указал не существующий id для обновления фильма");
-            throw new ValidationException(HttpStatus.NOT_FOUND
-                    , "Ошибка. Такого фильма не найдено");
-        }
-        return film;
+    public Film updateFilm(@Valid @RequestBody Film film) {
+        return filmService.updateFilm(film);
     }
 
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms (@RequestParam(value = "count"
+            , defaultValue = "10", required = false) Integer count) {
+        return filmService.getPopularFilms(count);
+    }
 }
