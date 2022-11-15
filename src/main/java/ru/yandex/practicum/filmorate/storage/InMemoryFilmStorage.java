@@ -3,12 +3,13 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import lombok.extern.slf4j.Slf4j;
+import ru.yandex.practicum.filmorate.model.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Component("filmMemoryStorage")
 public class InMemoryFilmStorage implements FilmStorage {
     public HashMap<Integer, Film> films = new HashMap<>();
 
@@ -45,7 +46,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getPopularFilms(Integer count){
+    public Collection<Film> getPopularFilms(Integer count) {
         Comparator<Film> comparator = Comparator.comparing(Film::getSizeLikeList).reversed()
                 .thenComparing(Film::getId);
         Set<Film> sortedPopularFilmList = new TreeSet<>(comparator);
@@ -54,5 +55,25 @@ public class InMemoryFilmStorage implements FilmStorage {
             sortedPopularFilmList.add(films.get(filmId));
         }
         return sortedPopularFilmList.stream().limit(count).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Pair getMapById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public Collection<Pair> getAllMap() {
+        return null;
+    }
+
+    @Override
+    public Pair getGenreById(Integer id) {
+        return null;
+    }
+
+    @Override
+    public Collection<Pair> getAllGenres() {
+        return null;
     }
 }
