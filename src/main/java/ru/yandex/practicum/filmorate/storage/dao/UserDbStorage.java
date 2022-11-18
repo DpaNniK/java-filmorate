@@ -23,6 +23,7 @@ public class UserDbStorage implements UserStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    //Возвращаю именно юзера из-за тестов в постмане
     @Override
     public User createUser(User user) {
         jdbcTemplate.update("INSERT INTO USERS (EMAIL, LOGIN, NAME, BIRTHDAY)" +
@@ -31,6 +32,7 @@ public class UserDbStorage implements UserStorage {
         return getUsersById(user.getId());
     }
 
+    //Здесь аналогичная ситуация
     @Override
     public User updateUser(User user) {
         jdbcTemplate.update("UPDATE USERS SET EMAIL=?, LOGIN=?, NAME=?, BIRTHDAY=? WHERE USER_ID=?",
@@ -54,6 +56,8 @@ public class UserDbStorage implements UserStorage {
         getUsersById(userId).getFriendList().add(friendId);
         //Проверка, что в ответ на запрос дружбы пришло подтверждение, в случае true во friend_list добавляется
         //новая пара друзей, а статус дружбы меняется на подтвержденный
+        //Проверка нужна для того, чтобы лишь сменить статус дружбы на подтвержденный,
+        //а также добавить новую запись с уже подтвержденным статусом дружбы
         if (checkOnContainsInFriendList(friendId, userId)) {
             jdbcTemplate.update("INSERT INTO USERS_FRIENDSHIP (USER_ID, FRIEND_ID, FRIENDSHIP_STATUS) " +
                     "VALUES (?, ?, ? ) ", userId, friendId, 2);

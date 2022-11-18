@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Pair;
 
 import java.util.Collection;
 
@@ -20,10 +19,4 @@ public interface FilmStorage {
 
     Collection<Film> getPopularFilms(Integer count);
 
-    Pair getMapById(Integer id);
-    Collection<Pair> getAllMap();
-
-    Pair getGenreById(Integer id);
-
-    Collection<Pair> getAllGenres();
 }

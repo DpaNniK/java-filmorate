@@ -58,13 +58,13 @@ public class FilmController {
     }
 
     @GetMapping("/mpa/{id}")
-    public Pair getMapById(@PathVariable Integer id) {
-        return filmService.getMapById(id);
+    public Pair getMpaById(@PathVariable Integer id) {
+        return filmService.getMpaById(id);
     }
 
     @GetMapping("/mpa")
-    public Collection<Pair> getAllMap() {
-        return filmService.getAllMap();
+    public Collection<Pair> getAllMpa() {
+        return filmService.getAllMpa();
     }
 
     @GetMapping("/genres/{id}")

@@ -11,6 +11,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Pair;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.dao.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.dao.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.dao.MpaDbStorage;
 import ru.yandex.practicum.filmorate.storage.dao.UserDbStorage;
 
 import static org.assertj.core.api.Assertions.*;
@@ -26,6 +28,8 @@ import java.util.Set;
 class FilmoRateApplicationTests {
     private final UserDbStorage userStorage;
     private final FilmDbStorage filmDbStorage;
+    private final MpaDbStorage mpaDbStorage;
+    private final GenreDbStorage genreDbStorage;
 
     @Autowired
     private final JdbcTemplate jdbcTemplate;
@@ -240,7 +244,7 @@ class FilmoRateApplicationTests {
 
     @Test
     public void testGetAllMap() {
-        Optional<Collection<Pair>> mapList = Optional.ofNullable(filmDbStorage.getAllMap());
+        Optional<Collection<Pair>> mapList = Optional.ofNullable(mpaDbStorage.getAllMpa());
         assertThat(mapList)
                 .isPresent()
                 .hasValueSatisfying(id ->
@@ -250,7 +254,7 @@ class FilmoRateApplicationTests {
 
     @Test
     public void testGetAllGenres() {
-        Optional<Collection<Pair>> mapList = Optional.ofNullable(filmDbStorage.getAllGenres());
+        Optional<Collection<Pair>> mapList = Optional.ofNullable(genreDbStorage.getAllGenres());
         assertThat(mapList)
                 .isPresent()
                 .hasValueSatisfying(id ->
@@ -260,7 +264,7 @@ class FilmoRateApplicationTests {
 
     @Test
     public void testGetMapById() {
-        Optional<Pair> map = Optional.ofNullable(filmDbStorage.getMapById(1));
+        Optional<Pair> map = Optional.ofNullable(mpaDbStorage.getMpaById(1));
         assertThat(map)
                 .isPresent()
                 .hasValueSatisfying(pair ->
@@ -271,7 +275,7 @@ class FilmoRateApplicationTests {
 
     @Test
     public void testGetGenreById() {
-        Optional<Pair> map = Optional.ofNullable(filmDbStorage.getGenreById(5));
+        Optional<Pair> map = Optional.ofNullable(genreDbStorage.getGenreById(5));
         assertThat(map)
                 .isPresent()
                 .hasValueSatisfying(pair ->

@@ -7,8 +7,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Pair;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.dao.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.storage.dao.mapper.GenreMapper;
-import ru.yandex.practicum.filmorate.storage.dao.mapper.PairMapper;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -87,27 +85,5 @@ public class FilmDbStorage implements FilmStorage {
         }
 
         return sortedPopularFilmList.stream().limit(count).collect(Collectors.toSet());
-    }
-
-    @Override
-    public Pair getMapById(Integer id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM MPA WHERE MPA_ID = ?", new PairMapper()
-                , id);
-    }
-
-    @Override
-    public Collection<Pair> getAllMap() {
-        return jdbcTemplate.query("SELECT * FROM MPA", new PairMapper());
-    }
-
-    @Override
-    public Pair getGenreById(Integer id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM GENRES WHERE GENRE_ID = ?"
-                , new GenreMapper(), id);
-    }
-
-    @Override
-    public Collection<Pair> getAllGenres() {
-        return jdbcTemplate.query("SELECT * FROM GENRES", new GenreMapper());
     }
 }

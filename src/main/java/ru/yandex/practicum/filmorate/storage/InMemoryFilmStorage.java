@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.model.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -55,25 +54,5 @@ public class InMemoryFilmStorage implements FilmStorage {
             sortedPopularFilmList.add(films.get(filmId));
         }
         return sortedPopularFilmList.stream().limit(count).collect(Collectors.toSet());
-    }
-
-    @Override
-    public Pair getMapById(Integer id) {
-        return null;
-    }
-
-    @Override
-    public Collection<Pair> getAllMap() {
-        return null;
-    }
-
-    @Override
-    public Pair getGenreById(Integer id) {
-        return null;
-    }
-
-    @Override
-    public Collection<Pair> getAllGenres() {
-        return null;
     }
 }

@@ -12,6 +12,8 @@ import ru.yandex.practicum.filmorate.model.Pair;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.dao.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.dao.MpaDbStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -27,11 +29,17 @@ public class FilmService implements FilmStorage {
     final FilmStorage filmStorage;
 
     final UserStorage userStorage;
+    final MpaDbStorage mpaDbStorage;
+    final GenreDbStorage genreDbStorage;
 
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage
-            , @Qualifier("dbStorage") UserStorage userStorage) {
+            , @Qualifier("dbStorage") UserStorage userStorage
+            , @Qualifier("mpaDbStorage") MpaDbStorage mpaDbStorage
+            , @Qualifier("genreDbStorage") GenreDbStorage genreDbStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.mpaDbStorage = mpaDbStorage;
+        this.genreDbStorage = genreDbStorage;
     }
 
 
@@ -119,23 +127,20 @@ public class FilmService implements FilmStorage {
         return filmStorage.getPopularFilms(count);
     }
 
-    @Override
-    public Pair getMapById(Integer id) {
+    public Pair getMpaById(Integer id) {
         if (id <= 0 || id > 5) {
             log.warn("Пользователь запросил не существующий MPA под id {}", id);
             throw new RequestErrorForFilm(HttpStatus.NOT_FOUND
                     , "Ошибка. MPA под данным ID не существует");
         }
         log.info("Пользователь запросил MPA под ID = {}", id);
-        return filmStorage.getMapById(id);
+        return mpaDbStorage.getMpaById(id);
     }
 
-    @Override
-    public Collection<Pair> getAllMap() {
-        return filmStorage.getAllMap();
+    public Collection<Pair> getAllMpa() {
+        return mpaDbStorage.getAllMpa();
     }
 
-    @Override
     public Pair getGenreById(Integer id) {
         if (id <= 0 || id > 6) {
             log.warn("Пользователь запросил не существующий GENRE под id {}", id);
@@ -143,12 +148,11 @@ public class FilmService implements FilmStorage {
                     , "Ошибка. Жанр под данным ID не существует");
         }
         log.info("Пользователь запросил GENRE под ID = {}", id);
-        return filmStorage.getGenreById(id);
+        return genreDbStorage.getGenreById(id);
     }
 
-    @Override
     public Collection<Pair> getAllGenres() {
-        return filmStorage.getAllGenres();
+        return genreDbStorage.getAllGenres();
     }
 
     private void checkContainsUserAndFilm(Integer filmId, Integer userId) {
@@ -192,5 +196,4 @@ public class FilmService implements FilmStorage {
         return genres.stream().sorted(Comparator.comparingInt(Pair::getId))
                 .distinct().collect(Collectors.toList());
     }
-
 }
