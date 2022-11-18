@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -18,9 +19,14 @@ public class Film {
     private final LocalDate releaseDate;
     @Positive
     private final int duration;
+    @NotNull
+    private final int rate;
+    private List<Pair> genres;
+    @NotNull
+    private Pair mpa;
     private Set<Integer> likeList = new TreeSet<>();
 
-    public Integer getSizeLikeList(){
+    public Integer getSizeLikeList() {
         return likeList.size();
     }
 }

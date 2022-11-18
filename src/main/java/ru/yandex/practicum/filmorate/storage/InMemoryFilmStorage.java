@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Component("filmMemoryStorage")
 public class InMemoryFilmStorage implements FilmStorage {
     public HashMap<Integer, Film> films = new HashMap<>();
 
@@ -45,7 +45,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getPopularFilms(Integer count){
+    public Collection<Film> getPopularFilms(Integer count) {
         Comparator<Film> comparator = Comparator.comparing(Film::getSizeLikeList).reversed()
                 .thenComparing(Film::getId);
         Set<Film> sortedPopularFilmList = new TreeSet<>(comparator);

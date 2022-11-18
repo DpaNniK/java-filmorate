@@ -130,21 +130,4 @@ public class FilmorateUserTests {
                 .andExpect(status().is4xxClientError());
     }
 
-    //Ошибка при обновлении пользователя без указания id в теле запроса
-    @Test
-    public void testPutMethodForUserWithoutId() throws Exception {
-        User user = new User("mail@mail.ru", "dolore", LocalDate.parse("1946-08-20"));
-        user.setName("Nick Name");
-        user.setId(1);
-        User newUser = new User("mail@yandex.ru", "doloreUpdate", LocalDate.parse("1976-09-20"));
-
-        mockMvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(gson.toJson(user)))
-                .andExpect(status().isOk());
-        mockMvc.perform(put("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(gson.toJson(newUser)))
-                .andExpect(status().is4xxClientError());
-    }
 }

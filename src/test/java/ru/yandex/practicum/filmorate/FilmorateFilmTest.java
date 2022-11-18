@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.yandex.practicum.filmorate.gson.NewGson;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Pair;
 
 import java.time.LocalDate;
 
@@ -37,8 +38,8 @@ public class FilmorateFilmTest {
     //Тестирование добавления фильма без присвоения id в запросе
     @Test
     public void testPostMethodForFilmWithEmptyId() throws Exception {
-        Film film = new Film("film name", "des", LocalDate.parse("1967-03-25"), 100);
-
+        Film film = new Film("film name", "des", LocalDate.parse("1967-03-25"), 100, 5);
+        film.setMpa(new Pair(1, "name"));
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(film)))
@@ -53,9 +54,12 @@ public class FilmorateFilmTest {
     //Тестирование PUT для обновления инф-ции о фильме
     @Test
     public void testPutMethodForFilmWithEmptyId() throws Exception {
-        Film film = new Film("film name", "des", LocalDate.parse("1967-03-25"), 100);
-        Film newFilm = new Film("New Film", "new desc", LocalDate.parse("1989-04-17"), 190);
+        Film film = new Film("film name", "des", LocalDate.parse("1967-03-25"), 100, 5);
+        Film newFilm = new Film("New Film", "new desc"
+                , LocalDate.parse("1989-04-17"), 190, 5);
         newFilm.setId(1);
+        film.setMpa(new Pair(1, "name"));
+        newFilm.setMpa(new Pair(2, "name2"));
         mockMvc.perform(post("/films")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(film)));
@@ -72,7 +76,8 @@ public class FilmorateFilmTest {
     //Получение ошибки при неверной дате релиза
     @Test
     public void testPostMethodForFilmWithWrongDateRelease() throws Exception {
-        Film film = new Film("film name", "des", LocalDate.parse("1567-03-25"), 100);
+        Film film = new Film("film name", "des", LocalDate.parse("1567-03-25"), 100, 5);
+        film.setMpa(new Pair(1, "name"));
 
         mockMvc.perform(post("/films")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -83,26 +88,18 @@ public class FilmorateFilmTest {
     //Получение ошибки при обновлении фильма с неправильной датой нового
     @Test
     public void testPutMethodForFilmWithWrongDateRelease() throws Exception {
-        Film film = new Film("film name", "des", LocalDate.parse("1967-03-25"), 100);
-        Film newFilm = new Film("New Film", "new desc", LocalDate.parse("1389-04-17"), 190);
+        Film film = new Film("film name", "des", LocalDate.parse("1967-03-25"), 100, 5);
+        Film newFilm = new Film("New Film", "new desc"
+                , LocalDate.parse("1389-04-17"), 190, 5);
         newFilm.setId(1);
+        film.setMpa(new Pair(1, "name"));
+        newFilm.setMpa(new Pair(2, "name2"));
         mockMvc.perform(post("/films")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(film)));
         mockMvc.perform(put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(newFilm)))
-                .andExpect(status().is4xxClientError());
-    }
-
-    //Попытка обновить фильм с несущ. id
-    @Test
-    public void testPutMethodForUnknownFilm() throws Exception {
-        Film film = new Film("film name", "des", LocalDate.parse("1967-03-25"), 100);
-
-        mockMvc.perform(put("/films")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(gson.toJson(film)))
                 .andExpect(status().is4xxClientError());
     }
 }
