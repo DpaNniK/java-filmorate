@@ -14,3 +14,6 @@
 Проект реализован на версии Java 11
 
 Дальнейшая разработка проекта представлена в репозитории: https://github.com/LenaChaldina/java-filmorate
+
+Структура базы данных:
+![image](https://user-images.githubusercontent.com/106442300/226856851-0a8a5ea3-d261-4c36-8089-5a3c12860dd1.png)
